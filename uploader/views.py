@@ -10,7 +10,7 @@ import logging
 from django.views.decorators.csrf import csrf_exempt
 
 from bms.settings import IMAGE_ZOOM_URL, UPLOAD_FILE_ROOT, UPLOAD_FILE_URL
-from bms.apps.lib.response import SuccessJsonResponse, ErrorJsonResponse
+from bms.apps.lib.shortcuts import render_json_ok, render_json_error
 
 
 logger = logging.getLogger(__name__)
@@ -20,25 +20,25 @@ def upload_image(request):
     directory = request.POST.get('directory', 'default')
     files = request.FILES.values()
     if files:
-        path = 'image/%s/%s_%s%s' % (
+        path = 'bms/image/%s/%s_%s%s' % (
                 directory, time.strftime('%Y%m%d%H%M%S'), random.randint(0, 100), os.path.splitext(files[0].name)[1])
 
         if save_file(UPLOAD_FILE_ROOT + path, files[0]):
-            url = get_short_url(UPLOAD_FILE_ROOT + path)
+            url = get_short_url(UPLOAD_FILE_URL + path)
         else:
             logger.error(u'上传文件失败 file: [%s] path: [%s]', files[0].name, path)
             url = ''
     if url:
-        return SuccessJsonResponse({'url': url})
+        return render_json_ok(url)
     else:
-        return ErrorJsonResponse(1, u'上传图片失败!')
+        return render_json_error(u'上传图片失败!')
 
 @csrf_exempt
 def upload_audio(request):
     directory = request.POST.get('directory', 'default')
     files = request.FILES.values()
     if files:
-        path = 'audio/%s/%s_%s%s' % (
+        path = 'bms/audio/%s/%s_%s%s' % (
                 directory, time.strftime('%Y%m%d%H%M%S'), random.randint(0, 100), os.path.splitext(files[0].name)[1])
 
         if save_file(UPLOAD_FILE_ROOT + path, files[0]):
@@ -48,9 +48,9 @@ def upload_audio(request):
             url = ''
 
     if url:
-        return SuccessJsonResponse({'url': url})
+        return render_json_ok(url)
     else:
-        return ErrorJsonResponse(1, u'上传音频失败!')
+        return render_json_error(u'上传音频失败!')
 
 def get_short_url(path):
     url = IMAGE_ZOOM_URL + base64.standard_b64encode(path)
@@ -74,6 +74,6 @@ def save_file(file_name, upload_file):
                 fp.write(chunk)
     except Exception as e:
         logger.error(u'保存文件失败 Exception: [%s]', e)
-        return True # 本地调试忽略龙存
+#        return True # 本地调试忽略龙存
         return False
     return True

@@ -20,6 +20,7 @@
 	}
 	
 	Uploader.FILE_INPUT_ID_PREFIX = 'file_input_id_';
+	Uploader.IMAGE_HOST_URL = 'http://s7.rr.itc.cn/';
 	
 	Uploader.prototype = {
 		init: function(){
@@ -79,8 +80,8 @@
                             _this2.value = ''; // 将原有图片记录清空
                             console.info($.trim(this.responseText));
                             var data = eval("("+$.trim(this.responseText)+")");
-                            if(data.status==0){
-                                _this.uploadSuccessCallback(data.data.urls);
+                            if(data.status){
+                                _this.uploadSuccessCallback(_this.get_org_image_url(data.message));
                             }else{
                             	_this.uploadErrorCallback();
 //                                alert("图片上传失败!");
@@ -109,6 +110,12 @@
 	        	_this.value = ''; // 将原有图片记录清空
 				return false;				
 			}
+		},
+		get_org_image_url: function(short_url){
+			return this.get_image_url(short_url, 'org');
+		},
+		get_image_url: function(short_url, size){
+			return Uploader.IMAGE_HOST_URL + size + short_url;
 		},
 		preuploadCallback: null,
 		uploadSuccessCallback: null,
