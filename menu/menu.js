@@ -51,11 +51,15 @@
 	    	
 	    	var url = _this.url + "0/";
 	        $.getJSON(url, function(json) {
-	            var data = $.parseJSON(json.data);
-                _this.element.append(_this.menuNode);
-	            _this.menuNode.append(_this.ul);
-	            for(var i=0; i<data.length; i++){
-	            	$(".menu > ul", _this.element).append(_this.createANode(data[i]));
+	        	if(json.status){
+		            var data = $.parseJSON(json.message);
+	                _this.element.append(_this.menuNode);
+		            _this.menuNode.append(_this.ul);
+		            for(var i=0; i<data.length; i++){
+		            	$(".menu > ul", _this.element).append(_this.createANode(data[i]));
+		            }
+	            }else{
+	            	alert('获取菜单列表错误');
 	            }
 	        });
 	        
@@ -80,12 +84,16 @@
                 var hovernode = $(this);
                 if($.inArray(nodeId, _this.arr)==-1 && nodeId){
                     $.getJSON(url, function(json){
-                        _this.arr.push(nodeId);
-                        var nodes = $.parseJSON(json.data);
-                        console.info(nodes);
-                        for(var j=0; j<nodes.length; j++){
-                            _this.createANode(nodes[j], parentNode);
-                        }
+                    	if(json.status){
+	                        _this.arr.push(nodeId);
+	                        var nodes = $.parseJSON(json.message);
+	                        console.info(nodes);
+	                        for(var j=0; j<nodes.length; j++){
+	                            _this.createANode(nodes[j], parentNode);
+	                        }
+                    	}else{
+			            	alert('获取菜单列表错误');
+			            }
                     });
                 }
                 if($(this).parent().children('ul')){
