@@ -1,0 +1,1 @@
+function Player(p) { document.write('<object type="application/x-shockwave-flash" data="/static/dewplayer/dewplayer.swf?mp3='+p+'&showtime=1&nopointer=1" width="200" height="20" id="dewplayer" name="dewplayer"><param name="wmode" value="transparent" /><param name="movie" value="/static/dewplayer/dewplayer.swf?mp3='+p+'&showtime=1&nopointer=1" /></object>'); }
